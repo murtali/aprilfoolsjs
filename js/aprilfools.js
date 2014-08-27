@@ -1,28 +1,21 @@
 var afs = (function(afs) {
 
   function distanceBetweenPoints(mouseX, mouseY, buttonX, buttonY) {
-    var x = calculateX(mouseX, buttonX);
-    var y = calculateY(mouseY, buttonY);
+    var x = calculatePosition(mouseX, buttonX);
+    var y = calculatePosition(mouseY, buttonY);
 
     return Math.round( Math.sqrt( Math.pow(x, 2) + Math.pow(y, 2) ) );
   }
 
-  function calculateX(mX, bX) {
-    if (mX < bX) {
-      return bX - mX;
-    } else if (mX > bX) {
-      return mX - bX;
-    } else if (mX == bX) {
-      return 0;
-    }
-  }
-
-  function calculateY(mY, bY) {
-    if (mY < bY) {
-      return bY - mY;
-    } else if (mY > bY) {
-      return mY - bY;
-    } else if (mY == bY) {
+  // Calculates the coordinate line to use
+  // When given two x coordinates or two y, we want to build a triangle
+  // and the get the shortest distance.
+  function calculatePosition(mP, bP) {
+    if (mP < bP) {
+      return bP - mP;
+    } else if (mP > bP) {
+      return mP - bP;
+    } else if (mP == bP) {
       return 0;
     }
   }
@@ -45,12 +38,61 @@ var afs = (function(afs) {
         // distance between button and mouse
         var distance = distanceBetweenPoints(mouseX, mouseY, buttonX, buttonY);
 
-        if (distance < 200) {
-          this.__el.style.position = "absolute";
-          this.__el.style.left  = buttonX + 25;
-          this.__el.style.top   = buttonY + 25;
-        }
+        if (distance < 300) {
 
+          this.__el.style.position = "absolute";
+
+          if ((mouseX < buttonX) &&  (mouseY > buttonY)) {
+            if (buttonY - 25 <= 0) {
+
+              this.__el.style.left  = buttonX + 25;
+              this.__el.style.top   = 25;
+
+            } else {
+
+              this.__el.style.left  = buttonX + 25;
+              this.__el.style.top   = buttonY - 25;
+            }
+
+          } else if ((mouseX > buttonX) &&  (mouseY > buttonY)) {
+
+            if (buttonY - 25 <= 0) {
+
+              this.__el.style.left  = 25;
+              this.__el.style.top   = 25;
+
+            } else if(buttonX - 25 <= 0){
+
+              this.__el.style.left  = 25;
+              this.__el.style.top   = 25;
+
+            } else {
+
+              this.__el.style.left  = buttonX - 25;
+              this.__el.style.top   = buttonY - 25;
+            }
+
+          } else if ((mouseX < buttonX) &&  (mouseY < buttonY)) {
+
+            this.__el.style.left  = buttonX + 25;
+            this.__el.style.top   = buttonY + 25;
+
+          } else if ((mouseX > buttonX) &&  (mouseY < buttonY)) {
+
+            if (buttonX - 25 <= 0) {
+
+              this.__el.style.left  = 25;
+              this.__el.style.top   = buttonY + 25;
+
+            } else {
+
+              this.__el.style.left  = buttonX - 25;
+              this.__el.style.top   = buttonY + 25;
+            }
+
+          }
+
+        }
       }
     };
 
